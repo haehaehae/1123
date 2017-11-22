@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>BH Web Audio 4th</title>
+	<script src="./soundV.js"></script>
+	<style>
+	* {
+	    box-sizing: border-box;
+	}
+
+	body {
+	    margin: 0;
+	}
+
+	#myVideo {
+	    position: fixed;
+	    left:0;
+	    top: 0;
+	    min-width: 100%; 
+	    min-height: 100%;
+
+	}
+
+	.content {
+	    position: fixed;
+	    bottom: 0;
+	    width: 100%;
+	    padding: 20px;
+	}
+
+	button {
+	    width: 100px;
+	    font-size: 10px;
+	    padding: 10px;
+	    border: none;
+	    background: blue;
+	    color: #fff;
+	    cursor: pointer;
+	}
+
+	.btn {
+	    width: 100px;
+	    font-size: 10px;
+	    padding: 10px;
+	    border: none;
+	    background: red;
+	    color: #fff;
+	    cursor: pointer;
+	}
+
+	.btn:hover {
+	    background: #000;
+	    color: red;
+	}
+
+	button:hover {
+	    background: #000;
+	    color: blue;
+	}
+	html,body,div,img{margin:0; padding:0;}
+		/*이번엔 이미지를 넣어보겠습니다!!*/
+		/*동그란 이미지를 쓸 것이라 Border-radius는 지웠습니다 필요없음!!*/
+		.circle{ width:150px; height:150px;
+			position: absolute; left:calc(50% - 100px); top:200px;
+			animation: Moving 8s linear infinite;
+			/*애니메이션이름 Moving 8초동안 가속도없이 일정한 속도로 infinite(무한반복) 빙글빙글 돌아가게 해볼께요!!*/
+		}
+		@keyframes Moving{
+			0%{ }
+			100%{ transform: rotate(-360deg)}
+		}
+		.circle img{width:100%; height:auto; position: absolute; z-index: 9999;}
+	</style>
+</head>
+
+<body>
+
+	<video autoplay muted loop id="myVideo">
+  		<source src="backwave.mp4" type="video/mp4">
+  	</video>
+	
+	<div class="circle" id="circle">
+		<img src="wave1.gif" id="cImg" align="center">
+		<!-- 자 이렇게 이미지가 들어갔죠? 이름도 cImg로 붙였어요~-->
+	</div>
+
+	<div class="content">
+		<!--버튼리스트-->
+		<button id="stopBut" onclick="myFunction()"">stop</button>
+		<button id="playBut" onclick="myFunction()"">play</button>
+		<!-- 곡을 버튼으로 선택해볼께요 -->
+  		<button id="pauseBut" onclick="myFunction()">Pause</button>&nbsp;&nbsp;&nbsp;
+  		<!--플레이리스트-->
+	  	<button id="play1" class="btn">Wave</button>
+		<button id="play2" class="btn">Who</button>
+		<button id="play3" class="btn">FTWR</button>
+	 	<!--파일업로드-->
+		<input id="audio_file" type="file" accept="audio/*" />
+		<!-- 이 버튼에 대한 스크립트는 끝에 있어요 -->
+	</div>
+
+<script>
+	var video = document.getElementById("myVideo");
+	var newSound = new SoundBH("the_wave.mp3",16);
+
+		(function loop(){ 
+ 
+			var vol = newSound.getGain() / 10; 
+			circle.style.width = vol + "px";
+			circle.style.height = vol + "px";
+			circle.style.borderRadius = vol/2 + "px";
+			circle.style.left = "calc(50% - " + (vol/2) + "px)";
+			circle.style.top = 300 - (vol/2) + "px";
+
+			window.requestAnimationFrame(loop);	
+		})();
+		//newSound:노래, myVideo:영
+		playBut.onclick = function(){ newSound.play(); myVideo.play();};	
+		stopBut.onclick = function(){ newSound.stop(); myVideo.stop();};
+		pauseBut.onclick = function(){ newSound.pause(); myVideo.pause()};
+		audio_file.onchange = function(){
+		  	newSound.change(URL.createObjectURL(this.files[0]));
+		};
+
+		play1.onclick = function(){
+			cImg.setAttribute("src","wave1.gif");
+			newSound.change("the_wave.mp3");
+			myVideo.setAttribute("src","backwave.mp4");
+		};
+		
+		play2.onclick = function(){ 
+			cImg.setAttribute("src","who.gif");
+			newSound.change("who.mp3");
+			myVideo.setAttribute("src","who.mp4");
+
+		};
+
+		play3.onclick = function(){ 
+			cImg.setAttribute("src","FTWR.gif");
+			newSound.change("FTWR.mp3");
+			myVideo.setAttribute("src","FTWR.mp4");
+		};
+
+		function myFunction() {
+		  if (video.paused) {
+		    video.play();
+		    btn.innerHTML = "Pause";
+		  } else {
+		    video.pause();
+		    btn.innerHTML = "Play";
+		  }
+		}
+</script>
+
+</body>
+</html>
